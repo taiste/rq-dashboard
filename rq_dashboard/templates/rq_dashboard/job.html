@@ -6,14 +6,14 @@
         <span class="col-10">
             <h2><strong>Job ID</strong>: {{ id }}</h2>
         </span>
-            
+
         <span class="col-2">
             <button id="requeue-job-btn" class="btn btn-outline-warning btn-sm" style="display: none">Requeue</button>
             <button id="delete-job-btn" class="btn btn-outline-danger btn-sm">Delete</button>
         </span>
     </div>
     <div id="job-data" class="row"></div>
-    
+
 
     <script name="job-info" type="text/template">
 
@@ -33,6 +33,21 @@
             <p><strong>Ended at</strong>:<br> <%= d.ended_at %></p>
             <% } %>
         </span>
+        <% if (!_.isEmpty(d.meta)) { 
+             _.partition(_.pairs(d.meta), (_, i) => i % 2 === 0).map((coll) => {
+        %>
+            <div class="col-6">
+                <% _.map(coll, ([k, v]) => { %>
+                  <p><strong><%= k.charAt(0).toUpperCase() + k.slice(1).replace('_', ' ') %>:</strong>
+                  <% if (typeof v === 'object') { %>
+                  <pre><%= JSON.stringify(v, null, 2) %></pre>
+                  <% } else { %>
+                  <%= v %>
+                  <% } %>
+                  </p>
+                <% }) %>
+            </div>
+          <% })} %>
 
         <% if (d.exc_info) { %>
         <div class = "row col-12">

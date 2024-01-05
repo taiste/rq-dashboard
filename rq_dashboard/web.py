@@ -519,6 +519,10 @@ def list_jobs(instance_number, queue_name, registry_name, per_page, page):
 @jsonify
 def job_info(instance_number, job_id):
     job = Job.fetch(job_id)
+    try:
+        meta = job.get_meta()
+    except ModuleNotFoundError:
+        meta = None
     return dict(
         id=job.id,
         created_at=serialize_date(job.created_at),
@@ -527,6 +531,7 @@ def job_info(instance_number, job_id):
         origin=job.origin,
         status=job.get_status(),
         result=job._result,
+        meta=meta,
         exc_info=str(job.exc_info) if job.exc_info else None,
         description=job.description,
     )
